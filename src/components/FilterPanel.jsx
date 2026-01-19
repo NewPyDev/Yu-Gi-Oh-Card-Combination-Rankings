@@ -20,9 +20,9 @@ const FilterPanel = ({ filters, setFilters, onReset }) => {
                 onChange={handleChange}
                 className="w-full bg-duelist-dark border border-white/10 text-white font-rajdhani py-2 px-3 rounded-none focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan appearance-none transition-colors"
             >
-                <option value="">{placeholder}</option>
+                <option value="" className="bg-duelist-dark text-white">{placeholder}</option>
                 {options.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt} className="bg-duelist-dark text-white">{opt}</option>
                 ))}
             </select>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 const CombinationDetailPage = () => {
-    const { id } = useParams();
+    const { rank } = useParams();
     const navigate = useNavigate();
     const [combo, setCombo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,12 +13,12 @@ const CombinationDetailPage = () => {
         fetch('/rankings.json')
             .then(res => res.json())
             .then(data => {
-                const found = data.rankings.find(r => r.rank === parseInt(id));
+                const found = data.rankings.find(r => r.rank === parseInt(rank));
                 setCombo(found);
                 setLoading(false);
             })
             .catch(err => setLoading(false));
-    }, [id]);
+    }, [rank]);
 
     if (loading) return <div className="min-h-screen bg-duelist-dark flex items-center justify-center text-neon-cyan font-orbitron">INITIALIZING...</div>;
     if (!combo) return <div className="min-h-screen bg-duelist-dark flex items-center justify-center text-danger-red font-orbitron">DATA FRAGMENT NOT FOUND</div>;
@@ -43,8 +43,8 @@ const CombinationDetailPage = () => {
                         <span className="font-rajdhani font-bold tracking-widest text-sm">RETURN TO DATABASE</span>
                     </button>
                     <div className="flex gap-4">
-                        <button onClick={() => navigate(`/combination/${parseInt(id) - 1}`)} className="btn-cyber-secondary" disabled={parseInt(id) <= 1}>PREV</button>
-                        <button onClick={() => navigate(`/combination/${parseInt(id) + 1}`)} className="btn-cyber-secondary">NEXT</button>
+                        <button onClick={() => navigate(`/combination/${parseInt(rank) - 1}`)} className="btn-cyber-secondary" disabled={parseInt(rank) <= 1}>PREV</button>
+                        <button onClick={() => navigate(`/combination/${parseInt(rank) + 1}`)} className="btn-cyber-secondary">NEXT</button>
                     </div>
                 </div>
 
