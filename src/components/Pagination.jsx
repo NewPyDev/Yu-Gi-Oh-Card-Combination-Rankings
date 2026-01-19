@@ -1,74 +1,83 @@
-export default function Pagination({ currentPage, totalPages, onPageChange }) {
-    const getPageNumbers = () => {
-        const pages = []
-        const maxVisible = 5
+import React from 'react';
 
-        if (totalPages <= maxVisible) {
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+    // Generate page numbers
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxPagesToShow = 5;
+
+        if (totalPages <= maxPagesToShow) {
             for (let i = 1; i <= totalPages; i++) {
-                pages.push(i)
+                pages.push(i);
             }
         } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) pages.push(i)
-                pages.push('...')
-                pages.push(totalPages)
-            } else if (currentPage >= totalPages - 2) {
-                pages.push(1)
-                pages.push('...')
-                for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i)
-            } else {
-                pages.push(1)
-                pages.push('...')
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i)
-                pages.push('...')
-                pages.push(totalPages)
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            if (endPage - startPage < maxPagesToShow - 1) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+
+            if (startPage > 1) {
+                pages.push(1);
+                if (startPage > 2) pages.push('...');
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pages.push(i);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) pages.push('...');
+                pages.push(totalPages);
             }
         }
-
-        return pages
-    }
+        return pages;
+    };
 
     return (
-        <div className="flex justify-center items-center gap-2 mt-8">
-            {/* Previous Button */}
+        <div className="flex flex-wrap justify-center items-center gap-2 mt-12 mb-8">
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 glass-effect rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10 transition-all"
+                className="btn-cyber-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed group"
             >
-                Previous
+                &lt; PREV
             </button>
 
-            {/* Page Numbers */}
-            <div className="flex gap-2">
-                {getPageNumbers().map((page, index) => (
-                    page === '...' ? (
-                        <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">
-                            ...
-                        </span>
+            {getPageNumbers().map((page, index) => (
+                <div key={index}>
+                    {page === '...' ? (
+                        <span className="text-tech-gray px-2 font-rajdhani">...</span>
                     ) : (
                         <button
-                            key={page}
                             onClick={() => onPageChange(page)}
-                            className={`px-4 py-2 rounded-lg font-medium transition-all ${currentPage === page
-                                    ? 'bg-gradient-to-r from-yugioh-purple to-yugioh-blue text-white'
-                                    : 'glass-effect hover:bg-white/10'
-                                }`}
+                            className={`
+                                relative px-4 py-2 font-orbitron font-bold text-sm clip-path-polygon transition-all duration-300
+                                ${currentPage === page
+                                    ? 'bg-neon-cyan text-duelist-dark shadow-[0_0_15px_rgba(0,242,255,0.4)]'
+                                    : 'bg-duelist-panel text-tech-gray border border-white/10 hover:border-neon-cyan/50 hover:text-white'
+                                }
+                            `}
+                            style={{
+                                clipPath: 'polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px)'
+                            }}
                         >
                             {page}
                         </button>
-                    )
-                ))}
-            </div>
+                    )}
+                </div>
+            ))}
 
-            {/* Next Button */}
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 glass-effect rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10 transition-all"
+                className="btn-cyber-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                Next
+                NEXT &gt;
             </button>
         </div>
-    )
-}
+    );
+};
+
+export default Pagination;

@@ -4,90 +4,123 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-yugioh-dark via-gray-900 to-black text-white font-sans;
+    @apply bg-duelist-dark text-white font-rajdhani overflow-x-hidden;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(162, 0, 255, 0.05) 0%, transparent 40%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-orbitron tracking-wide;
   }
 }
 
 @layer components {
-  .card-gradient {
-    @apply bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-purple-900/20 
-           border border-purple-500/30 backdrop-blur-sm;
+
+  /* Tech Panel - The main container style */
+  .tech-panel {
+    @apply bg-duelist-panel bg-opacity-80 backdrop-blur-md border border-white/10 rounded-none relative;
+    clip-path: polygon(20px 0, 100% 0,
+        100% calc(100% - 20px), calc(100% - 20px) 100%,
+        0 100%, 0 20px);
   }
-  
-  .glass-effect {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+
+  /* Add tech corners */
+  .tech-panel::before {
+    content: '';
+    @apply absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-neon-cyan;
   }
-  
-  .btn-primary {
-    @apply px-6 py-3 bg-gradient-to-r from-yugioh-purple to-yugioh-blue 
-           text-white font-semibold rounded-lg shadow-lg 
-           hover:shadow-xl hover:scale-105 transition-all duration-300;
+
+  .tech-panel::after {
+    content: '';
+    @apply absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-neon-cyan;
   }
-  
-  .btn-secondary {
-    @apply px-4 py-2 glass-effect text-white font-medium rounded-lg 
-           hover:bg-white/10 transition-all duration-300;
+
+  /* Cyber Button */
+  .btn-cyber {
+    @apply relative px-6 py-2 font-orbitron font-bold text-sm tracking-widest text-duelist-dark bg-neon-cyan transition-all duration-300;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   }
-  
-  .input-field {
-    @apply w-full px-4 py-2 glass-effect rounded-lg text-white 
-           placeholder-gray-400 focus:outline-none focus:ring-2 
-           focus:ring-yugioh-purple transition-all;
+
+  .btn-cyber:hover {
+    @apply bg-white;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+    transform: translateY(-2px);
   }
-  
-  .combo-card {
-    @apply card-gradient rounded-xl p-4 hover:scale-105 
-           hover:shadow-2xl hover:shadow-purple-500/20 
-           transition-all duration-300 cursor-pointer;
+
+  .btn-cyber-secondary {
+    @apply relative px-6 py-2 font-orbitron font-bold text-sm tracking-widest text-neon-cyan border border-neon-cyan bg-transparent transition-all duration-300;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   }
-  
-  .stat-badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-           bg-gradient-to-r from-yugioh-gold/20 to-yellow-600/20 
-           border border-yugioh-gold/50 text-yugioh-gold;
+
+  .btn-cyber-secondary:hover {
+    @apply bg-neon-cyan/10;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
   }
-  
-  .section-title {
-    @apply text-3xl md:text-4xl font-bold bg-gradient-to-r 
-           from-yugioh-gold via-yellow-400 to-yugioh-gold 
-           bg-clip-text text-transparent;
+
+  /* Card Hologram Effect */
+  .holo-card {
+    @apply relative overflow-hidden transition-all duration-500 bg-duelist-panel border border-white/5;
+  }
+
+  .holo-card:hover {
+    @apply border-neon-cyan/50;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+    transform: translateY(-5px);
+  }
+
+  .holo-card::after {
+    content: "";
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none;
+    background: linear-gradient(105deg,
+        transparent 20%,
+        rgba(0, 242, 255, 0.1) 25%,
+        rgba(255, 255, 255, 0.1) 30%,
+        rgba(0, 242, 255, 0.1) 35%,
+        transparent 40%);
+    background-size: 200% 100%;
+    animation: holo-wipe 2s infinite linear;
+  }
+
+  .holo-card:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Metric Bar */
+  .metric-bar-bg {
+    @apply h-2 w-full bg-duelist-dark relative overflow-hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .metric-bar-fill {
+    @apply h-full bg-gradient-to-r from-neon-blue to-neon-cyan relative;
   }
 }
 
-@layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 
-           bg-clip-text text-transparent;
+@keyframes holo-wipe {
+  0% {
+    background-position: 100% 0;
   }
-  
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
+
+  100% {
+    background-position: -100% 0;
   }
 }
 
-@keyframes glow {
-  from {
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
-  }
-  to {
-    text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 30px rgba(168, 85, 247, 0.5);
-  }
-}
-
-/* Custom scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  @apply bg-duelist-dark;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #6f42c1, #4a90e2);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #8b5cf6, #60a5fa);
+  @apply bg-neon-cyan/30 rounded hover:bg-neon-cyan/60;
 }

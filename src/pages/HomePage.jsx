@@ -1,159 +1,118 @@
-import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function HomePage() {
-    const [stats, setStats] = useState(null)
+const HomePage = () => {
+    const [stats, setStats] = useState({
+        totalCombinations: 0,
+        topCombinations: 0,
+        metrics: 9
+    });
 
     useEffect(() => {
-        // Try to load rankings metadata
-        fetch('/rankings.json')
-            .then(res => res.json())
-            .then(data => setStats(data.metadata))
-            .catch(() => setStats(null))
-    }, [])
+        const fetchStats = async () => {
+            try {
+                const response = await fetch('/rankings.json');
+                const data = await response.json();
+                setStats({
+                    totalCombinations: data.metadata.totalCombinations || 0,
+                    topCombinations: data.metadata.scoredCombinations || 0,
+                    metrics: 9
+                });
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        };
+        fetchStats();
+    }, []);
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-duelist-dark overflow-hidden pt-20">
+            {/* Ambient Background Elements */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-neon-cyan/5 rounded-full blur-[100px]"></div>
+                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-dark-magician/10 rounded-full blur-[120px]"></div>
+                <div className="absolute inset-0 bg-hex-pattern opacity-30"></div>
+            </div>
+
             {/* Hero Section */}
-            <section className="relative overflow-hidden py-20 px-4">
-                <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent"></div>
+            <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[85vh] text-center">
 
-                <div className="max-w-5xl mx-auto text-center relative z-10">
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-                        <span className="section-title animate-glow">
-                            Yu-Gi-Oh Combo Rankings
-                        </span>
+                {/* Glitch/Tech Title */}
+                <div className="mb-4 relative group cursor-default">
+                    <h1 className="text-6xl md:text-8xl font-black font-orbitron tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-gray-200 to-gray-500 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                        DUEL <span className="text-neon-cyan">METRICS</span>
                     </h1>
-
-                    <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                        Algorithm-driven analysis of <span className="text-yugioh-gold font-semibold">every possible 2-card combination</span> in Yu-Gi-Oh, ranked by objective scoring metrics
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/rankings" className="btn-primary">
-                            Explore Rankings 🔍
-                        </Link>
-                        <Link to="/about" className="btn-secondary">
-                            Learn More 📖
-                        </Link>
-                    </div>
+                    <div className="h-1 w-2/3 mx-auto mt-2 bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-50"></div>
                 </div>
-            </section>
 
-            {/* Stats Section */}
-            {stats && (
-                <section className="py-16 px-4">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="card-gradient rounded-xl p-8 text-center">
-                                <div className="text-4xl md:text-5xl font-bold text-yugioh-gold mb-2">
-                                    {stats.totalCombinations?.toLocaleString() || 'N/A'}
-                                </div>
-                                <div className="text-gray-300">Total Combinations Analyzed</div>
-                            </div>
+                <p className="mt-6 text-xl md:text-2xl text-tech-gray font-rajdhani max-w-3xl tracking-wide">
+                    The advanced algorithmic ranking system for <span className="text-white font-bold">Yu-Gi-Oh!</span> card combinations.
+                    Analyze synergy, power, and consistency with data-driven precision.
+                </p>
 
-                            <div className="card-gradient rounded-xl p-8 text-center">
-                                <div className="text-4xl md:text-5xl font-bold text-purple-400 mb-2">
-                                    {stats.topN?.toLocaleString() || 'N/A'}
-                                </div>
-                                <div className="text-gray-300">Top Ranked Combos</div>
-                            </div>
-
-                            <div className="card-gradient rounded-xl p-8 text-center">
-                                <div className="text-4xl md:text-5xl font-bold text-blue-400 mb-2">
-                                    9
-                                </div>
-                                <div className="text-gray-300">Scoring Metrics</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* Concept Explanation */}
-            <section className="py-16 px-4 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-                        <span className="text-gradient">What Makes This Different?</span>
-                    </h2>
-
-                    <div className="glass-effect rounded-xl p-8 space-y-6">
-                        <div className="flex items-start gap-4">
-                            <div className="text-3xl">🧮</div>
-                            <div>
-                                <h3 className="text-xl font-bold text-yugioh-gold mb-2">Algorithm-Driven Analysis</h3>
-                                <p className="text-gray-300">
-                                    Unlike traditional tier lists based on tournament results, this project uses objective scoring algorithms to evaluate card combinations based on measurable game mechanics.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                            <div className="text-3xl">⚡</div>
-                            <div>
-                                <h3 className="text-xl font-bold text-purple-400 mb-2">Comprehensive Coverage</h3>
-                                <p className="text-gray-300">
-                                    Every possible 2-card combination is analyzed and scored across 9 different metrics including card advantage, board presence, disruption, and more.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                            <div className="text-3xl">🎯</div>
-                            <div>
-                                <h3 className="text-xl font-bold text-blue-400 mb-2">Theoretical Potential</h3>
-                                <p className="text-gray-300">
-                                    Discover hidden synergies and underrated combinations that might not see tournament play but have high theoretical potential based on their effects.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                {/* Stats Grid - Cyber Style */}
+                <div className="mt-12 w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <StatCard
+                        label="COMBINATIONS"
+                        value={stats.totalCombinations.toLocaleString()}
+                        sub="ANALYZED"
+                        color="text-neon-cyan"
+                    />
+                    <StatCard
+                        label="TOP RANKED"
+                        value={stats.topCombinations.toLocaleString()}
+                        sub="INDEXED"
+                        color="text-neon-blue"
+                    />
+                    <StatCard
+                        label="METRICS"
+                        value="9"
+                        sub="PARAMETERS"
+                        color="text-millennium-gold"
+                    />
                 </div>
-            </section>
 
-            {/* Scoring Metrics Preview */}
-            <section className="py-16 px-4">
-                <div className="max-w-6xl mx-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                        <span className="section-title">9 Scoring Metrics</span>
-                    </h2>
+                {/* CTA Buttons */}
+                <div className="mt-16 flex flex-col sm:flex-row gap-6">
+                    <Link to="/rankings" className="btn-cyber text-center min-w-[200px] flex items-center justify-center gap-2 group">
+                        ACCESS DATABASE
+                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </Link>
+                    <Link to="/about" className="btn-cyber-secondary text-center min-w-[200px]">
+                        SYSTEM PARAMETERS
+                    </Link>
+                </div>
+            </main>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[
-                            { name: 'Card Advantage', icon: '📈', desc: 'Draw & search effects' },
-                            { name: 'Board Presence', icon: '👥', desc: 'Special summons & tokens' },
-                            { name: 'Disruption', icon: '🚫', desc: 'Negation & destruction' },
-                            { name: 'Protection', icon: '🛡️', desc: 'Sustainability & recursion' },
-                            { name: 'Combo Extender', icon: '🔗', desc: 'Chain enablers' },
-                            { name: 'Spell/Trap Synergy', icon: '✨', desc: 'Backrow support' },
-                            { name: 'Extra Deck Access', icon: '⭐', desc: 'Fusion, Synchro, XYZ, Link' },
-                            { name: 'Removal', icon: '💥', desc: 'Spot & mass removal' },
-                            { name: 'Resource Generation', icon: '💎', desc: 'LP, counters, materials' },
-                        ].map((metric, index) => (
-                            <div key={index} className="card-gradient rounded-xl p-6 hover:scale-105 transition-transform">
-                                <div className="text-4xl mb-3">{metric.icon}</div>
-                                <h3 className="text-lg font-bold text-white mb-2">{metric.name}</h3>
-                                <p className="text-sm text-gray-400">{metric.desc}</p>
+            {/* Metrics Marquee/Grid */}
+            <div className="relative z-10 border-t border-white/10 bg-duelist-panel/50 backdrop-blur-sm py-16">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <h2 className="text-2xl font-orbitron text-neon-cyan tracking-widest mb-10">CORE ANALYSIS MODULES</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {['Card Advantage', 'Board Presence', 'Disruption', 'Protection', 'Sustainability', 'Combo Extender', 'Synergy', 'Extra Deck', 'Removal'].map((metric) => (
+                            <div key={metric} className="p-4 border border-white/5 bg-duelist-dark hover:border-neon-cyan/50 hover:bg-neon-cyan/5 transition-all duration-300">
+                                <span className="font-rajdhani font-bold text-tech-gray uppercase text-sm tracking-wider">{metric}</span>
                             </div>
                         ))}
                     </div>
                 </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-20 px-4">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                        <span className="text-gradient">Ready to Discover the Best Combos?</span>
-                    </h2>
-                    <p className="text-xl text-gray-300 mb-8">
-                        Explore thousands of ranked card combinations and find hidden synergies
-                    </p>
-                    <Link to="/rankings" className="btn-primary text-lg">
-                        View Rankings Now →
-                    </Link>
-                </div>
-            </section>
+            </div>
         </div>
-    )
-}
+    );
+};
+
+const StatCard = ({ label, value, sub, color }) => (
+    <div className="tech-panel p-6 flex flex-col items-center justify-center group hover:bg-white/5 transition-colors duration-300">
+        <span className={`text-4xl md:text-5xl font-orbitron font-bold ${color} drop-shadow-lg`}>
+            {value}
+        </span>
+        <span className="text-xs font-rajdhani font-bold tracking-[0.2em] text-white mt-1">
+            {label}
+        </span>
+        <span className="text-[10px] uppercase text-tech-gray tracking-widest mt-1">
+            {sub}
+        </span>
+    </div>
+);
+
+export default HomePage;
